@@ -1,0 +1,122 @@
+package QuickSort;
+
+import java.util.Arrays;
+
+public class Quick_Sort_Final {
+	private static void insertInOrder(int element, int[] a, int begin, int end) {
+		if (element >= a[end]) {
+			a[end + 1] = element;
+		} else if (begin < end) {
+			a[end + 1] = a[end];
+			insertInOrder(element, a, begin, end - 1);
+		} else {
+			a[end + 1] = a[end];
+			a[end] = element;
+		}//end if
+	}//end insertInOrder
+	
+	public static void insertionSort(int[] a, int n) {
+		insertionSort(a, 0, n - 1);
+	}//end insertionSort
+	
+	public static void insertionSort(int[] a, int first, int last) {
+		if (first < last) {
+			//Sort all but the last entry
+			insertionSort(a, first, last - 1);
+			
+			//Insert the last entry in sorted order
+			insertInOrder(a[last], a, first, last - 1);
+		}//end if
+	}//end insertionSort
+	
+	//quick sort
+	public static void quickSort(int[] array, int n) {
+		quickSort(array, 0, n - 1);
+	}
+	
+	public static void quickSort(int[] a, int first, int last) { 
+		if (last - first + 1 < 5) {
+			insertionSort(a, first, last);
+		} else {
+			int pivotIndex = partition(a, first, last);
+			//Sort subarrays Smaller and Larger
+			quickSort(a, first, pivotIndex - 1);
+			quickSort(a, pivotIndex + 1, last);
+		}// end if
+	}//end quickSort
+	
+		
+	private static int partition(int[] a, int first, int last) {
+		int mid = first + (last - first) / 2;
+		sortFirstMiddleLast(a, first, mid, last);
+		
+		swap(a, mid, last - 1);
+		int pivotIndex = last - 1;
+		int pivotValue = a[pivotIndex];
+		
+		int indexFromLeft = first + 1;
+		int indexFromRight = last - 2;
+		
+		boolean done = false;
+		while (!done) {
+			while (a[indexFromLeft] < pivotValue) {
+				indexFromLeft++;
+			}
+			while (a[indexFromRight] > pivotValue) {
+				indexFromRight--;
+			}
+			
+			assert a[indexFromLeft] >= pivotValue &&
+					a[indexFromRight] < pivotValue;
+			
+			if (indexFromLeft < indexFromRight) {
+				swap(a, indexFromLeft, indexFromRight);
+				indexFromLeft++;
+				indexFromRight--;
+			} else {
+				done = true;
+			}
+		}// end while
+		
+		//Place pivotValue between the subarrays Smaller and Larger
+		swap(a, pivotIndex, indexFromLeft);
+		pivotIndex = indexFromLeft;
+		System.out.println("The first pivot value is: ");
+		System.out.println(a[pivotIndex]);
+		
+		int[] subArray1 = Arrays.copyOfRange(a, 0, pivotIndex);
+		System.out.println("The first-subarray is: ");
+		for (int i = 0; i < subArray1.length; i++) {
+			System.out.println(subArray1[i]);
+		}
+		int[] subArray2 = Arrays.copyOfRange(a, pivotIndex, a.length);
+		System.out.println("The second subarray is: ");
+		for (int j = 0; j < subArray2.length; j++) {
+			System.out.println(subArray2[j]);
+		}
+		return pivotIndex;
+	}// end partition
+	
+	private static void sortFirstMiddleLast(int[] a, int first, int mid, int last) {
+		order(a, first, mid);
+		order(a, mid, last);
+	}
+	
+	private static void order(int[] array, int i, int j) {
+		if (array[i] > array[j]) {
+			swap(array, i, j);
+		}
+	}
+	
+	private static void swap(int[] array, int i, int j) {
+		int temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	}
+	
+	public static void main(String[] args) {
+		int[] arr = {35, 20, 200, 25, 85, 35, 40, 55, 45, 50};
+		partition(arr, 0, arr.length - 1);
+	}
+}
+
